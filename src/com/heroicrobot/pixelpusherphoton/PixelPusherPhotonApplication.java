@@ -18,7 +18,7 @@ public class PixelPusherPhotonApplication extends Application {
 		@Override
 		public void update(Observable registry, Object updatedDevice) {
 			if (updatedDevice != null) {
-				PixelPusher device = (PixelPusher)updatedDevice;
+				PixelPusher device = (PixelPusher) updatedDevice;
 				Log.i(TAG, "Updated pusher: " + device.toString());
 			}
 		}
