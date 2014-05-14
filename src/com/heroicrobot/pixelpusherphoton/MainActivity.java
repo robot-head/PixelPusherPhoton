@@ -1,22 +1,27 @@
 package com.heroicrobot.pixelpusherphoton;
 
+import java.util.ArrayList;
+import java.util.Observable;
+import java.util.Observer;
+
 import android.app.Activity;
-import android.support.v7.app.ActionBarActivity;
-import android.support.v7.app.ActionBar;
+import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
-import android.content.Context;
-import android.os.Build;
-import android.os.Bundle;
-import android.view.Gravity;
+import android.support.v4.widget.DrawerLayout;
+import android.support.v7.app.ActionBar;
+import android.support.v7.app.ActionBarActivity;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.support.v4.widget.DrawerLayout;
 import android.widget.ArrayAdapter;
 import android.widget.TextView;
+
+import com.heroicrobot.dropbit.devices.pixelpusher.PixelPusher;
+import com.heroicrobot.dropbit.registry.DeviceRegistry;
 
 public class MainActivity extends ActionBarActivity implements
 		NavigationDrawerFragment.NavigationDrawerCallbacks {
@@ -33,11 +38,50 @@ public class MainActivity extends ActionBarActivity implements
 	 */
 	private CharSequence mTitle;
 
+	public static final String TAG = "PixelPusherPhoton";
+	
+	class UpdateAdaptorTask implements Runnable {
+
+
+		PixelPusher device;
+		public UpdateAdaptorTask(PixelPusher updatedDevice) {
+			super();
+			this.device = updatedDevice;
+		}
+
+		@Override
+		public void run() {
+			adapter.add(device);
+			adapter.notifyDataSetChanged();
+		}
+		
+	}
+	
+	class PixelPusherObserver implements Observer {
+
+		@Override
+		public void update(Observable registry, Object updatedDevice) {
+			if (updatedDevice != null) {
+				PixelPusher device = (PixelPusher) updatedDevice;
+				Log.i(TAG, "Updated pusher: " + device.toString());
+				runOnUiThread(new UpdateAdaptorTask(device));
+			}
+		}
+
+	}
+
+	private DeviceRegistry registry;
+	private PixelPusherObserver observer;
+	
+	ArrayAdapter<PixelPusher> adapter;
+	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main);
-
+		adapter = new ArrayAdapter<PixelPusher>(this,
+				android.R.layout.simple_list_item_1, android.R.id.text1,
+				new ArrayList<PixelPusher>());
 		mNavigationDrawerFragment = (NavigationDrawerFragment) getSupportFragmentManager()
 				.findFragmentById(R.id.navigation_drawer);
 		mTitle = getTitle();
@@ -45,6 +89,11 @@ public class MainActivity extends ActionBarActivity implements
 		// Set up the drawer.
 		mNavigationDrawerFragment.setUp(R.id.navigation_drawer,
 				(DrawerLayout) findViewById(R.id.drawer_layout));
+		
+		registry = new DeviceRegistry();
+		observer = new PixelPusherObserver();
+		registry.addObserver(observer);
+		registry.setAntiLog(true);
 	}
 
 	@Override
