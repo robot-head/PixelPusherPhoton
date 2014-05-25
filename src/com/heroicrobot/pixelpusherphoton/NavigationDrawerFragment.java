@@ -1,6 +1,10 @@
 package com.heroicrobot.pixelpusherphoton;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import android.app.Activity;
+import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.res.Configuration;
 import android.os.Bundle;
@@ -18,8 +22,12 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.ListView;
+import android.widget.TextView;
 import android.widget.Toast;
+
+import com.heroicrobot.dropbit.devices.pixelpusher.PixelPusher;
 
 /**
  * Fragment used for managing interactions for and presentation of a navigation
@@ -59,7 +67,14 @@ public class NavigationDrawerFragment extends Fragment {
 	private boolean mFromSavedInstanceState;
 	private boolean mUserLearnedDrawer;
 
+	private ArrayAdapter<PixelPusher> adapter;
+
 	public NavigationDrawerFragment() {
+	}
+
+	public void AddPusher(PixelPusher device) {
+		adapter.add(device);
+		adapter.notifyDataSetChanged();
 	}
 
 	@Override
@@ -91,6 +106,21 @@ public class NavigationDrawerFragment extends Fragment {
 		setHasOptionsMenu(true);
 	}
 
+	class PusherArrayAdapter extends ArrayAdapter<PixelPusher> {
+
+		public PusherArrayAdapter(Context context, int resource,
+				int textViewResourceId, List<PixelPusher> objects) {
+			super(context, resource, textViewResourceId, objects);
+		}
+
+		@Override
+		public View getView(int position, View convertView, ViewGroup parent) {
+			// TODO Auto-generated method stub
+			return super.getView(position, convertView, parent);
+		}
+
+	}
+
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
@@ -104,9 +134,26 @@ public class NavigationDrawerFragment extends Fragment {
 						selectItem(position);
 					}
 				});
+		adapter = new ArrayAdapter<PixelPusher>(getActionBar()
+				.getThemedContext(), android.R.layout.simple_list_item_1,
+				android.R.id.text1, new ArrayList<PixelPusher>()) {
 
-		mDrawerListView
-				.setAdapter(((MainActivity)getActivity()).adapter);
+			@Override
+			public View getView(int position, View convertView, ViewGroup parent) {
+				PixelPusher pusher = this.getItem(position);
+				if (pusher.getControllerOrdinal() == 0) {
+					TextView view = new TextView(parent.getContext());
+					view.setText(pusher.getMacAddress());
+					return view;
+				}
+				TextView view = new TextView(parent.getContext());
+				view.setText("Group " + pusher.getGroupOrdinal()
+						+ " Controller " + pusher.getControllerOrdinal());
+				return view;
+			}
+
+		};
+		mDrawerListView.setAdapter(adapter);
 		mDrawerListView.setItemChecked(mCurrentSelectedPosition, true);
 		return mDrawerListView;
 	}

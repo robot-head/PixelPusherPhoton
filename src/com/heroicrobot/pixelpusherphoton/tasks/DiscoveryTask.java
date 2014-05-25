@@ -4,7 +4,7 @@ import java.util.List;
 
 import android.os.AsyncTask;
 
-import com.heroicrobot.dropbit.devices.pixelpusher.*;
+import com.heroicrobot.dropbit.devices.pixelpusher.PixelPusher;
 
 public class DiscoveryTask extends AsyncTask<Void, Integer, List<PixelPusher>> {
 
