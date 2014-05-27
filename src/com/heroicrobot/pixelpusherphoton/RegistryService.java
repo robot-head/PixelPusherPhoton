@@ -5,11 +5,8 @@ import java.util.Observer;
 
 import android.app.Service;
 import android.content.Intent;
-import android.os.Handler;
+import android.os.Binder;
 import android.os.IBinder;
-import android.os.Message;
-import android.os.Messenger;
-
 import com.heroicrobot.dropbit.registry.DeviceRegistry;
 
 public class RegistryService extends Service {
@@ -25,11 +22,13 @@ public class RegistryService extends Service {
 
 	public DeviceRegistry registry;
 	private PixelPusherObserver observer;
-	final Messenger mMessenger = new Messenger(new IncomingHandler());
+
+	// final Messenger mMessenger = new Messenger(new IncomingHandler());
 
 	@Override
 	public IBinder onBind(Intent arg0) {
-		return mMessenger.getBinder();
+		// return mMessenger.getBinder();
+		return mBinder;
 	}
 
 	@Override
@@ -51,14 +50,26 @@ public class RegistryService extends Service {
 		registry.addObserver(observer);
 		registry.setAntiLog(true);
 	}
-	
-	class IncomingHandler extends Handler {
 
-		@Override
-		public void handleMessage(Message msg) {
-			super.handleMessage(msg);
+	// class IncomingHandler extends Handler {
+	//
+	// @Override
+	// public void handleMessage(Message msg) {
+	// super.handleMessage(msg);
+	// }
+	//
+	// }
+
+	private final IBinder mBinder = new LocalBinder();
+
+	public class LocalBinder extends Binder {
+		RegistryService getService() {
+			return RegistryService.this;
 		}
-		
+	}
+
+	public DeviceRegistry getRegistry() {
+		return registry;
 	}
 
 }

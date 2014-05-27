@@ -106,21 +106,6 @@ public class NavigationDrawerFragment extends Fragment {
 		setHasOptionsMenu(true);
 	}
 
-	class PusherArrayAdapter extends ArrayAdapter<PixelPusher> {
-
-		public PusherArrayAdapter(Context context, int resource,
-				int textViewResourceId, List<PixelPusher> objects) {
-			super(context, resource, textViewResourceId, objects);
-		}
-
-		@Override
-		public View getView(int position, View convertView, ViewGroup parent) {
-			// TODO Auto-generated method stub
-			return super.getView(position, convertView, parent);
-		}
-
-	}
-
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
