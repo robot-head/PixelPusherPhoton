@@ -11,5 +11,7 @@
     <string name="action_settings">Settings</string>
     <string name="title_activity_pick_pusher">Choose a PixelPusher to configure</string>
     <string name="Scan">Scan</string>
+    <string name="title_activity_photon_config">PhotonConfigActivity</string>
+    <string name="hello_world">Hello world!</string>
 
 </resources>
