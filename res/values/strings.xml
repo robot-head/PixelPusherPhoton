@@ -13,5 +13,12 @@
     <string name="Scan">Scan</string>
     <string name="title_activity_photon_config">PhotonConfigActivity</string>
     <string name="hello_world">Hello world!</string>
+    <string name="groupNumberLabel">Group Number</string>
+    <string name="pusherNumberLabel">Pusher Number</string>
+    <string name="horizontalRule">Horizontal rule</string>
+    <string name="rebootButton">Reboot</string>
+    <string name="saveButton">Save</string>
+    <string name="wifiSSIDLabel">SSID</string>
+    <string name="wifiPassLabel">Password</string>
 
 </resources>
